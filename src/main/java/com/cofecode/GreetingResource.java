@@ -6,6 +6,12 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import javax.print.attribute.standard.Media;
 import java.util.ArrayList;
@@ -17,8 +23,16 @@ import java.util.stream.IntStream;
 
 @Path("/games")
 @Produces(MediaType.APPLICATION_JSON)
+@APIResponse(
+        responseCode = "200",
+        description = "Return operation data.",
+        content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ResponseModel.class)
+        )
+)
+@Tag(name="Game controller")
 public class GreetingResource {
-
     private final List<Games> gamesList = new ArrayList<>();
 
     public GreetingResource() {
@@ -29,6 +43,18 @@ public class GreetingResource {
     }
 
     @GET
+    @Operation(
+            summary= "Get all games",
+            description = "Retrieves a paginated list of games. The results can be filtered by game name and sorted by the game"
+    )
+    @APIResponse(
+            responseCode = "200",
+            description = "Return games list.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Games.class,type = SchemaType.ARRAY)
+            )
+    )
     public Response getGameList(
             //@HeaderParam("page") int page,
             //@HeaderParam("size") int size,
@@ -69,6 +95,26 @@ public class GreetingResource {
 
     @GET
     @Path("/{id}")
+    @Operation(
+            summary = "Get game by id",
+            description = "Retrieves specified game by id."
+    )
+    @APIResponse(
+            responseCode = "200",
+            description = "Return game.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Games.class)
+            )
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Return operation data.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ResponseModel.class)
+            )
+    )
     public Response getGame(@PathParam("id") int id) {
         return gamesList.stream()
                 .filter(v -> v.getId() == id)
@@ -80,6 +126,10 @@ public class GreetingResource {
     }
 
     @POST
+    @Operation(
+            summary = "Create game",
+            description = "Create new game."
+    )
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createGame(Games game) {
         long id = gamesList.stream().max(Comparator.comparingLong(Games::getId)).get().getId()+1;
@@ -89,6 +139,18 @@ public class GreetingResource {
     }
 
     @PATCH
+    @Operation(
+            summary = "Update game",
+            description = "Update specified game fields."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Return operation data.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ResponseModel.class)
+            )
+    )
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateGame(Games game) {
         gamesList.stream().filter(v -> v.getId() == game.getId()).findFirst().ifPresent(v -> {
@@ -100,6 +162,18 @@ public class GreetingResource {
     }
 
     @PUT
+    @Operation(
+            summary = "Replace game",
+            description = "Replace game."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Return operation data.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ResponseModel.class)
+            )
+    )
     @Consumes(MediaType.APPLICATION_JSON)
     public Response replaceGame(Games game) {
         OptionalInt index = IntStream.range(0, gamesList.size()).filter(i -> gamesList.get(i).getId() == game.getId()).findFirst();
@@ -111,6 +185,18 @@ public class GreetingResource {
 
     @DELETE
     @Path("/{id}")
+    @Operation(
+            summary = "Delete game",
+            description = "delete game by id."
+    )
+    @APIResponse(
+            responseCode = "400",
+            description = "Return operation data.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ResponseModel.class)
+            )
+    )
     public Response deleteGame(@PathParam("id") int id) {
         boolean removed = gamesList.removeIf(v -> v.getId() == id);
 
