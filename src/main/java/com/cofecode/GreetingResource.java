@@ -2,6 +2,8 @@ package com.cofecode;
 
 import com.cofecode.entity.Games;
 import com.cofecode.entity.ResponseModel;
+import com.cofecode.services.GameService;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
@@ -35,6 +37,9 @@ import java.util.stream.IntStream;
 public class GreetingResource {
     private final List<Games> gamesList = new ArrayList<>();
 
+    @Inject
+    private GameService gameService;
+
     public GreetingResource() {
         gamesList.add(new Games(1L, "R6", "FPS"));
         gamesList.add(new Games(3,"The Elder Scrolls V: Skyrim","RPG"));
@@ -63,6 +68,7 @@ public class GreetingResource {
             @QueryParam("name") String name,
             @CookieParam("gameCategory") String gameCategory
     ) {
+        gameService.test();
         List<Games> pagedGames = gamesList;
         if (name != null && !name.isEmpty()) {
             pagedGames = pagedGames.stream().filter(g -> g.getName().toLowerCase().contains(name.toLowerCase())).collect((Collectors.toList()));
