@@ -1,6 +1,7 @@
 package com.cofecode.services;
 
 import com.cofecode.entity.Games;
+import com.cofecode.exceptions.GameDontExistException;
 import com.cofecode.repository.GamesRepository;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -45,11 +46,11 @@ public class GameService {
 
     @Transactional
     public void replaceGame(Games game) {
-        gamesRepository.findByIdOptional(game.getId()).ifPresent(v -> gamesRepository.persist(game));
+        gamesRepository.findByIdOptional(game.getId()).ifPresentOrElse(v -> gamesRepository.persist(game), () -> { throw new GameDontExistException("Game with id " + game.getId() + " does not exist");});
     }
 
     public void updateGame(long id, String name, String category) {
-        gamesRepository.findByIdOptional(id).ifPresent(v -> {
+        gamesRepository.findByIdOptional(id).ifPresentOrElse(v -> {
             if (name != null && !name.isEmpty()) {
                 v.setName(name);
             }
@@ -57,12 +58,12 @@ public class GameService {
                 v.setCategory(category);
             }
             gamesRepository.persist(v);
-        });
+        }, () -> { throw new GameDontExistException("Game with id " + id + " does not exist");});
     }
 
     public void deleteGame(long id) {
-        gamesRepository.findByIdOptional(id).ifPresent(v -> {
+        gamesRepository.findByIdOptional(id).ifPresentOrElse(v -> {
             gamesRepository.delete(v);
-        });
+        }, () -> { throw new GameDontExistException("Game with id " + id + " does not exist");});
     }
 }
