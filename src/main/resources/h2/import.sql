@@ -1,0 +1,1 @@
+insert into games values (1, "Tomb Rider", "Action");
