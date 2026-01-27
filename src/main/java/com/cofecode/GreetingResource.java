@@ -3,6 +3,7 @@ package com.cofecode;
 import com.cofecode.entity.Games;
 import com.cofecode.entity.ResponseModel;
 import com.cofecode.services.GameService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -48,6 +49,7 @@ public class GreetingResource {
                     schema = @Schema(implementation = Games.class,type = SchemaType.ARRAY)
             )
     )
+    @RolesAllowed("user")
     public Response getGameList(
             //@HeaderParam("page") int page,
             //@HeaderParam("size") int size,
@@ -92,6 +94,7 @@ public class GreetingResource {
                     schema = @Schema(implementation = ResponseModel.class)
             )
     )
+    @RolesAllowed("CoffeEnjoer")
     public Response getGame(@PathParam("id") int id) {
         return gameService.findById(id)
                 .map(v -> Response.ok(v)
@@ -106,6 +109,7 @@ public class GreetingResource {
             description = "Create new game."
     )
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public Response createGame(Games game) {
         gameService.createGames(game);
         return Response.ok(new ResponseModel("Game created", 201)).build();
