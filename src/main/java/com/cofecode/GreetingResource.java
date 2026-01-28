@@ -51,10 +51,10 @@ public class GreetingResource {
     )
     @RolesAllowed("user")
     public Response getGameList(
-            //@HeaderParam("page") int page,
-            //@HeaderParam("size") int size,
-            @QueryParam("page") @DefaultValue("1") int page,
-            @QueryParam("size") @DefaultValue("10") int size,
+            //@QueryParam("page") @DefaultValue("1") int page,
+            //@QueryParam("size") @DefaultValue("10") int size,
+            @HeaderParam("page") int page,
+            @HeaderParam("size") int size,
             @QueryParam("name") String name,
             @CookieParam("gameCategory") String gameCategory
     ) {

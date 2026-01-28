@@ -41,8 +41,8 @@ public class UserService {
                                 null,
                                 "JWT Token",
                                 3600,
-                                false,
-                                false))
+                                true,
+                                true))
                 .entity(new ResponseModel("SUCCESS",200)).build();
     }
 }
