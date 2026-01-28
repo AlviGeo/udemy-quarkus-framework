@@ -1,6 +1,6 @@
 quarkus:
   http:
-    port: 8001
+    port: 8081
   datasource:
     url: jdbc:postgresql://localhost:5432/mydb
     username: admin
